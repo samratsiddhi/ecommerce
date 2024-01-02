@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.core.validators import MaxValueValidator
 # Create your models here.
 
 User = get_user_model()
@@ -103,6 +103,15 @@ class OrderItem(models.Model):
     def __str__(self):
         return self.id   
 
+
+class Review(models.Model):
+    product = models.ForeignKey(Product, on_delete =  models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    star = models.IntegerField(validators=[MaxValueValidator(5)])
+    
+    def __str__(self):
+        return self.star
+    
 
     
 
