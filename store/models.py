@@ -110,7 +110,7 @@ class Review(models.Model):
     star = models.IntegerField(validators=[MaxValueValidator(5)])
     
     def __str__(self):
-        return self.star
+        return self.id
     
 
     
