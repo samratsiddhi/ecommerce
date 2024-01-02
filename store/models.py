@@ -1,6 +1,9 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
+
+User = get_user_model()
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -8,6 +11,7 @@ class Category(models.Model):
     def __str__(self) -> str:
         return self.name
     
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     quanity = models.IntegerField(default=0)
@@ -18,6 +22,7 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name
     
+
 class Customer(models.Model):
     MALE_CHOICE = 'M'
     FEMALE_CHOICE = 'F'
@@ -34,6 +39,6 @@ class Customer(models.Model):
         max_length = 1,
         choices = GENDER_CHOICES
     )
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     
-
-
+    
