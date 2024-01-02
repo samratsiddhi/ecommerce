@@ -18,5 +18,22 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name
     
+class Customer(models.Model):
+    MALE_CHOICE = 'M'
+    FEMALE_CHOICE = 'F'
+    OTHER_CHOICE = 'O'
+    
+    GENDER_CHOICES = [
+        (MALE_CHOICE , 'MALE'),
+        (FEMALE_CHOICE, 'FEMALE'),
+        (OTHER_CHOICE, 'OTHER')
+    ]
+    
+    address = models.CharField(max_length=200)
+    gender = models.CharField(
+        max_length = 1,
+        choices = GENDER_CHOICES
+    )
+    
 
 
