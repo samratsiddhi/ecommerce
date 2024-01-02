@@ -41,4 +41,16 @@ class Customer(models.Model):
     )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     
+class Cart(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.id
+    
+
+    
+    
+
+    
+     
     
