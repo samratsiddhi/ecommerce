@@ -52,10 +52,60 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete =  models.CASCADE)
     quantity = models.IntegerField(default = 1)
     
-    
-    
     def __str__(self):
         return self.id
+    
+class Order(models.Model):
+    PENDING_CHOICE = 'P'
+    CONFIRM_CHOICE = 'CF'
+    CANCEL_CHOICE = 'C'
+    COMPLETED_CHOICE = 'CP'
+    STATUS_CHOICES = [
+        (PENDING_CHOICE , 'P'),
+        (CANCEL_CHOICE , 'C'),
+        (COMPLETED_CHOICE , 'CP'),
+        (CONFIRM_CHOICE, 'CF')
+    ]
+    
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length = 2,
+        choices = STATUS_CHOICES,
+        default = PENDING_CHOICE
+    )
+    payment_status = models.BooleanField(default = False)
+    shipping_address = models.CharField(max_length=250)
+    
+    def __str__(self):
+        return self.id  
+    
+ 
+class OrderItem(models.Model):
+    PENDING_CHOICE = 'P'
+    CONFIRM_CHOICE = 'CF'
+    CANCEL_CHOICE = 'C'
+    COMPLETED_CHOICE = 'CP'
+    STATUS_CHOICES = [
+        (PENDING_CHOICE , 'P'),
+        (CANCEL_CHOICE , 'C'),
+        (COMPLETED_CHOICE , 'CP'),
+        (CONFIRM_CHOICE, 'CF')
+    ]
+    product = models.ForeignKey(Product, on_delete =  models.CASCADE)
+    price = models.FloatField()
+    quantity = models.IntegerField(default = 1)
+    status = models.CharField(
+        max_length = 2,
+        choices = STATUS_CHOICES,
+        default = PENDING_CHOICE
+    )    
+    
+    def __str__(self):
+        return self.id   
+
+
+    
+
 
     
 
