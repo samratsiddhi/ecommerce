@@ -12,15 +12,19 @@ class Category(models.Model):
         return self.name
     
 
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    quanity = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
     price = models.FloatField()
     discounted_price = models.FloatField()
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    
+    
 
     def __str__(self) -> str:
         return self.name
+
     
 
 class Customer(models.Model):
@@ -34,6 +38,11 @@ class Customer(models.Model):
         (OTHER_CHOICE, 'OTHER')
     ]
     
+    first_name = models.CharField(max_length=200)
+    middle_name = models.CharField(blank = True,max_length=200)
+    last_name = models.CharField(max_length=200)
+
+    
     address = models.CharField(max_length=200)
     gender = models.CharField(
         max_length = 1,
@@ -41,19 +50,24 @@ class Customer(models.Model):
     )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.first_name
+    
+    
+    
 class Cart(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.id
-  
-  
+        return str(self.id)
+    
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete =  models.CASCADE)
     quantity = models.IntegerField(default = 1)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.id
+        return str(self.id)
     
 class Order(models.Model):
     PENDING_CHOICE = 'P'
@@ -77,8 +91,9 @@ class Order(models.Model):
     shipping_address = models.CharField(max_length=250)
     
     def __str__(self):
-        return self.id  
+        return str(self.id)  
     
+
  
 class OrderItem(models.Model):
     PENDING_CHOICE = 'P'
@@ -98,10 +113,13 @@ class OrderItem(models.Model):
         max_length = 2,
         choices = STATUS_CHOICES,
         default = PENDING_CHOICE
-    )    
+    )   
+    order = models.ForeignKey(Order, on_delete=models.PROTECT) 
     
     def __str__(self):
-        return self.id   
+        return str(self.id) 
+    
+  
 
 
 class Review(models.Model):
@@ -110,7 +128,7 @@ class Review(models.Model):
     star = models.IntegerField(validators=[MaxValueValidator(5)])
     
     def __str__(self):
-        return self.id
+        return str(self.id)
     
 
     
