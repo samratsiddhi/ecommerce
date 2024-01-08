@@ -75,10 +75,10 @@ class Order(models.Model):
     CANCEL_CHOICE = 'C'
     COMPLETED_CHOICE = 'CP'
     STATUS_CHOICES = [
-        (PENDING_CHOICE , 'P'),
-        (CANCEL_CHOICE , 'C'),
-        (COMPLETED_CHOICE , 'CP'),
-        (CONFIRM_CHOICE, 'CF')
+        (PENDING_CHOICE , 'PENDING'),
+        (CANCEL_CHOICE , 'CANCLED'),
+        (COMPLETED_CHOICE , 'COMPLETED'),
+        (CONFIRM_CHOICE, 'CONFIRMED')
     ]
     
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
