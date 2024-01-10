@@ -15,9 +15,9 @@ urlpatterns = [
     
     
     # path('category',CategoryList.as_view(), name="category_list")
-    # ,path('category/<pk>',CategoryDetail.as_view())
-    # path('product',ProductList.as_view({}))
-    # ,path('product/<pk>',ProductDetail.as_view())
+    # ,path('category/<pk>',CategoryDetail.as_view()),
+    # # path('product',ProductList.as_view({}))
+    # # ,path('product/<pk>',ProductDetail.as_view())
     
     
     # path('product',ProductViewSet.as_view({

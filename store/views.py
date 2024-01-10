@@ -5,11 +5,12 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 from django.shortcuts import get_object_or_404
-# from rest_framework import status
+from rest_framework import status
 from rest_framework.views import APIView
 # from rest_framework import mixins
 from rest_framework import generics
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 
 # *****using decotor *****
@@ -61,7 +62,6 @@ from rest_framework import viewsets
 
 # ***** Using generic class-based views *****
 # class CategoryList(generics.ListCreateAPIView):
-    
 #     queryset = Category.objects.all()
 #     serializer_class = CategorySerializer
 
@@ -145,10 +145,16 @@ from rest_framework import viewsets
 # class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset =  Category.objects.all()
 #     serializer_class = CategorySerializer
+    
+    
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    
+    @action(methods=['get'], detail=True)
+    def verify(self, request, pk = None):
+        return  Response("ok")
        
 # @api_view(['GET','POST'])
 # def product_list(request):
@@ -166,13 +172,13 @@ class CategoryViewSet(viewsets.ModelViewSet):
 #             'detail' : 'data added successfully' 
 #         })
 
-class ProductList(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# class ProductList(generics.ListCreateAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
 
-class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Product.objects.all()
+#     serializer_class = ProductSerializer
     
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related('category').all()
