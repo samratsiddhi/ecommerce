@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
+from .serializers import UserSerialirez
 
 
 
@@ -39,13 +40,18 @@ def register(request):
 
     if password == confirm_password:
         
-        user = User(username=username)
-        # user.set_password(password)
-        user.password = make_password(password)
+        # user = User(username=username)
+        # # user.set_password(password)
+        # user.password = make_password(password)
         
-        user.save()
+        # user.save()
+        
+        serailzer = UserSerialirez(data = request.data)
+        serailzer.is_valid(raise_exception= True)
+        serailzer.save()
+
         
         return Response({
-            'detail' : 'user reregister success'
+            'detail' : 'user register success'
         })
     return Response('Password does not match')
