@@ -8,7 +8,7 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Snippets API",
+      title="Ecommerce API",
       default_version='v1',
       description="Test description",
       terms_of_service="https://www.google.com/policies/terms/",
@@ -29,6 +29,7 @@ urlpatterns = [
     
     path('admin/', admin.site.urls),
     path('api/v1/',include('store.urls')),
+    path('api/v1/',include('core.urls')),
 ]
 
 

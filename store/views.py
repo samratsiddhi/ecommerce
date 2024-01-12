@@ -186,6 +186,12 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     pagination_class = CustomPagination
 
+    def list(self, request, *args, **kwargs):
+        
+        '''
+            Custum Pagination is used here
+        '''
+        return super().list(request, *args, **kwargs)
 
 
 
