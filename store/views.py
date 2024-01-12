@@ -11,6 +11,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from .paginations import *
 
 
 # *****using decotor *****
@@ -183,6 +184,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related('category').all()
     serializer_class = ProductSerializer
+    pagination_class = CustomPagination
 
 
 
