@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'store',
     'core',
     'rest_framework',
+    'rest_framework.authtoken',
     'debug_toolbar',
     'drf_yasg',
     ]
