@@ -29,7 +29,7 @@ from .paginations import *
 #         return Response({
 #             'status' : 'success',
 #             'message' : 'data insert successful'
-#         })
+#         })        
 
 # ***** class based view   *****
 # class CategoryList(APIView):
@@ -47,7 +47,7 @@ from .paginations import *
 #         })
 
 
-# *****using mixins***** 
+# # *****using mixins***** 
 # class CategoryList(mixins.ListModelMixin,
 #                    mixins.CreateModelMixin,
 #                    generics.GenericAPIView):
@@ -60,6 +60,11 @@ from .paginations import *
            
 #     def post(self, request, *args, **kwargs):
 #         return self.create(request, *args, **kwargs)
+    
+#     @action(methods=['get'], detail=True)
+#     def verify(self, request, pk = None):
+#         return  Response("ok")
+
 
 # ***** Using generic class-based views *****
 # class CategoryList(generics.ListCreateAPIView):

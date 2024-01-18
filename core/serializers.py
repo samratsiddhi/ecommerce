@@ -1,23 +1,48 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
+from .models import *
 
-User = get_user_model()
+# class UserSerialirez(serializers.ModelSerializer):
 
-class UserSerialirez(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = (
-            'username',
-            'password'
-        )
-        extra_kwargs = {'password': {'write_only': True}}
+#     class Meta:
+#         model = User
+#         fields = (
+#             'username',
+#             'password',
+#             'email'
+#         )
+#         extra_kwargs = {'password': {'write_only': True}}
         
-    def create(self, validated_data):    
-        user = User.objects.create(username = validated_data['username'])
-        user.password =  make_password(validated_data['password'])
-        user.save()
-        return user
+#     def create(self, validated_data):    
+#         instance = User.objects.create_user(**validated_data)
+#         return instance
+        
+
+    #     user = User.objects.create(username = validated_data['username'])
+    #     user.password =  make_password(validated_data['password'])
+    #     user.save()
+    #     return user
+    
+class UserSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    confirm_password = serializers.CharField()
+    
+    def validate_password(self, value):
+        if len(value)<8:
+            raise serializers.ValidationError("password mustbe atleast 8 charecters")
+        return value
+    
+    # def validate(self, attrs):
+    #     if attrs.get('confirm_password') != attrs.get('password'):
+    #         raise serializers.ValidationError({
+    #             "password" : "passwords do not match"
+    #         })
+    #     if len(attrs.get('password'))<8:
+    #         raise serializers.ValidationError({
+    #             "password" : "password must be atleast 8 charecters"
+    #         })
+    #     return super().validate(attrs)
         
         
