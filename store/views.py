@@ -12,7 +12,8 @@ from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from .paginations import *
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from.permissions import *
 
 # *****using decotor *****
 # @api_view(['GET','POST'])
@@ -157,6 +158,11 @@ from .paginations import *
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (
+        IsAuthenticatedOrReadOnly,
+        IsAdminorNOt,
+    )
+    
     
     @action(methods=['get'], detail=True)
     def verify(self, request, pk = None):

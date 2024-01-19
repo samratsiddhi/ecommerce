@@ -29,20 +29,28 @@ class UserSerializer(serializers.Serializer):
     password = serializers.CharField()
     confirm_password = serializers.CharField()
     
+    def create(self, validated_data):
+        email = validated_data.get('email')
+        password = validated_data.get('password')
+        return User.objects.create_user(email = email , password =password)
+    
     def validate_password(self, value):
         if len(value)<8:
             raise serializers.ValidationError("password mustbe atleast 8 charecters")
         return value
     
-    # def validate(self, attrs):
-    #     if attrs.get('confirm_password') != attrs.get('password'):
-    #         raise serializers.ValidationError({
-    #             "password" : "passwords do not match"
-    #         })
-    #     if len(attrs.get('password'))<8:
-    #         raise serializers.ValidationError({
-    #             "password" : "password must be atleast 8 charecters"
-    #         })
-    #     return super().validate(attrs)
+    def validate_email(self,value):
+        if User.objects.filter(email =value).exists():
+            raise serializers.ValidationError({
+                "email" : "email already exists"
+            })
+        return value
+            
+    def validate(self, attrs):        
+        if attrs.get('confirm_password') != attrs.get('password'):
+            raise serializers.ValidationError({
+                "password" : "passwords do not match"
+            })
+        return super().validate(attrs)
         
         

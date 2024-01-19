@@ -1,21 +1,23 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,UserManager
 from django.contrib.auth.hashers import make_password
+from random import randint
 # Create your models here.
 
 class CustomUserManager(UserManager):
     def _create_user(self, email, password, **extra_fields):
-        user = User(email=email, **extra_fields)
+        username = email.split("@")[0] + str(randint(0,99999))
+        user = User(email=email, username = username , **extra_fields)
         user.password = make_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
-    def create_user(self, username= None, email=None, password=None, **extra_fields):
+    def create_user(self, email=None, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
-    def create_superuser(self,  username= None, email=None, password=None, **extra_fields):
+    def create_superuser(self, email=None, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 

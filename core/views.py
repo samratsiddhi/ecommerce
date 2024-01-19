@@ -10,10 +10,10 @@ from .models import User
 # Create your views here.
 @api_view(['POST'])
 def login(request):
-    username = request.data.get('username')
+    email = request.data.get('email')
     password = request.data.get('password')
     
-    user = authenticate(username=username,password=password)
+    user = authenticate(username=email,password=password)
     
     if user:
         token,_=Token.objects.get_or_create(user=user)
@@ -31,7 +31,9 @@ def login(request):
 def register(request):
     serializer = UserSerializer(data = request.data)
     serializer.is_valid(raise_exception=True)
-    return Response("ok")
+    serializer.save()
+    return Response("User created successfuly")
+
 
 
 # with username and password 
