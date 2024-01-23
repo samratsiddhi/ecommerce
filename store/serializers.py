@@ -2,10 +2,27 @@ from rest_framework import serializers
 from .models import *
 
 class CategorySerializer(serializers.ModelSerializer):
+    
+    # without using prefetch
+    total_products = serializers.SerializerMethodField()
+    
+    #using prefetch
+    # total_products = serializers.IntegerField()
+
     class Meta:
         model = Category
-        fields = ['id','name',]
-
+        fields = ['id','name','total_products']
+        
+        
+    # without pre fetched data
+    def get_total_products(self,category:Category):
+    #     without using reverse relation in models
+        # return category.product_set.count()
+    
+    #     using reverse relation in models
+        return category.products.count()
+    
+    
 # class CategorySerializer(serializers.Serializer):
 #     id = serializers.IntegerField(read_only=True)
 #     name = serializers.CharField()
@@ -62,5 +79,9 @@ class ProductSerializer(serializers.ModelSerializer):
 #         return instance
         
         
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ('__all__')
     
         

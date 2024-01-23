@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth.hashers import make_password
 from .serializers import UserSerializer
 from .models import User
+from django.core.mail import send_mail
 
 
 # Create your views here.
@@ -32,7 +33,17 @@ def register(request):
     serializer = UserSerializer(data = request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response("User created successfuly")
+    
+    send_mail(
+        "welcome to ecommerce",
+        "Hello" + serializer.validated_data.get('email') + "welcome",
+        "pasal@gmail.com",
+        [serializer.validated_data.get('email'),]
+    )
+    
+    return Response("User created successfully")
+    
+    
 
 
 

@@ -14,6 +14,11 @@ from rest_framework.decorators import action
 from .paginations import *
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from.permissions import *
+from django_filters import rest_framework as filters
+from .filters import ProductFilter
+from rest_framework import filters as f
+from django.db.models import Count
+
 
 # *****using decotor *****
 # @api_view(['GET','POST'])
@@ -155,18 +160,6 @@ from.permissions import *
     
     
 
-class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    permission_classes = (
-        IsAuthenticatedOrReadOnly,
-        IsAdminorNOt,
-    )
-    
-    
-    @action(methods=['get'], detail=True)
-    def verify(self, request, pk = None):
-        return  Response("ok")
        
 # @api_view(['GET','POST'])
 # def product_list(request):
@@ -192,10 +185,39 @@ class CategoryViewSet(viewsets.ModelViewSet):
 #     queryset = Product.objects.all()
 #     serializer_class = ProductSerializer
     
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (
+        IsAuthenticatedOrReadOnly,
+        IsAdminorNOt,
+    )
+    
+    @action(methods=['get'], detail=True)
+    def verify(self, request, pk = None):
+        return  Response("ok")
+    
+    # def get_queryset(self):
+    #     return Category.objects.prefetch_related('products')\
+    #         .annotate(
+    #             total_products = Count('products'))\
+    #         .all()
+            
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.select_related('category').all()
     serializer_class = ProductSerializer
     pagination_class = CustomPagination
+    
+    # filter using djndofilter
+    filter_backends = (filters.DjangoFilterBackend,f.SearchFilter)
+    filterset_fields = ('category',)
+    
+    # filter using djndofilter class
+    filterset_class = ProductFilter
+    
+    # for search filed
+    # filter_backends = [f.SearchFilter]
+    search_fields = ['name',]
 
     def list(self, request, *args, **kwargs):
         
@@ -203,6 +225,12 @@ class ProductViewSet(viewsets.ModelViewSet):
             Custum Pagination is used here
         '''
         return super().list(request, *args, **kwargs)
+    
+class CustomerViewSet(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class =CustomerSerializer
+    
+
 
 
 

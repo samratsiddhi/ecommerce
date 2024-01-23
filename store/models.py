@@ -18,7 +18,7 @@ class Product(models.Model):
     quantity = models.IntegerField(default=0)
     price = models.FloatField()
     discounted_price = models.FloatField()
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE,related_name = 'products')
     
     
 
@@ -38,20 +38,22 @@ class Customer(models.Model):
         (OTHER_CHOICE, 'OTHER')
     ]
     
-    first_name = models.CharField(max_length=200)
-    middle_name = models.CharField(blank = True,max_length=200)
-    last_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200 , blank =True, null = True)
+    middle_name = models.CharField(blank = True,max_length=200, null = True)
+    last_name = models.CharField(max_length=200, blank =True, null = True)
 
     
-    address = models.CharField(max_length=200)
+    address = models.CharField(max_length=200, blank =True, null = True)
     gender = models.CharField(
         max_length = 1,
-        choices = GENDER_CHOICES
+        choices = GENDER_CHOICES,
+        blank =True, 
+        null = True,
     )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     
-    def __str__(self):
-        return self.first_name
+    # def __str__(self):
+    #     return self.first_name
     
     
     

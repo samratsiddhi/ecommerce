@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'debug_toolbar',
     'drf_yasg',
+    'django_filters',
+    'djoser',
     ]
 
 MIDDLEWARE = [
@@ -151,5 +153,21 @@ REST_FRAMEWORK = {
     ]
 }
 
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'SERIALIZERS': {},
+}
+
 AUTH_USER_MODEL = "core.User"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = '74732b91075b7d' #sender's email-id
+EMAIL_HOST_PASSWORD = 'a39e8dab63234b'#password associated with above email-id
+
 
