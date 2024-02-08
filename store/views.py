@@ -12,12 +12,12 @@ from rest_framework import generics
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from .paginations import *
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
 from.permissions import *
 from django_filters import rest_framework as filters
 from .filters import ProductFilter
 from rest_framework import filters as f
-from django.db.models import Count
+from django.db.models import Count,Q
 
 
 # *****using decotor *****
@@ -74,7 +74,7 @@ from django.db.models import Count
 
 # ***** Using generic class-based views *****
 # class CategoryList(generics.ListCreateAPIView):
-#     queryset = Category.objects.all()
+#     queryset = Category.objects.a ll()
 #     serializer_class = CategorySerializer
 
 
@@ -212,7 +212,7 @@ class ProductViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend,f.SearchFilter)
     filterset_fields = ('category',)
     
-    # filter using djndofilter class
+    # filter using djangofilter class
     filterset_class = ProductFilter
     
     # for search filed
@@ -226,11 +226,72 @@ class ProductViewSet(viewsets.ModelViewSet):
         '''
         return super().list(request, *args, **kwargs)
     
-class CustomerViewSet(viewsets.ModelViewSet):
+class CustomerViewSet(viewsets.GenericViewSet):
     queryset = Customer.objects.all()
     serializer_class =CustomerSerializer
+    permission_classes = (IsAuthenticated,)
     
+    def get_queryset(self):
+        user = self.request.user
+        return Customer.objects.filter(user=user)
+    
+    def list(self, request, *args, **kwargs):
+        customer = self.get_queryset().first()
+        serializer = self.serializer_class(customer)
+        return Response(serializer.data)
+        
+    def update(self, request, *args, **kwargs):
+        customer = self.get_queryset().first()
+        context = {}
+        context['request'] = request
+        serializer = self.serializer_class(data=request.data,instance= customer, context = context)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+ 
+class CartViewset(viewsets.GenericViewSet):
+    queryset = Product.objects.all()
+    serializer_class = CartSerializer
+    pagination_class = CustomPagination
+    permission_classes = (IsAuthenticated,)
+    
+    def list(self,request,*arge,**kwargs):
+        customer  = Customer.objects.filter(user = self.request.user).first()
+        cart,_ = Cart.objects.prefetch_related('items').get_or_create(customer= customer)
+        serializer = CartSerializer(cart)
+        return Response(serializer.data)
+        
+        
+class CartItemViewset(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = CartItemSerializer
+    pagination_class = CustomPagination
+    permission_classes = (IsAuthenticated,)
+    
+    def get_queryset(self):
+        customer  = Customer.objects.filter(user = self.request.user).first()
+        cart,_ = Cart.objects.prefetch_related('items').get_or_create(customer= customer)
+        return CartItem.objects.filter(
+            cart = cart
+        )
+    
+    def get_serializer_class(self):
+        if self.request.method == "PUT":
+            return CancleOrderSerializer
+        return OrderSerializer
 
+
+
+class OrderViewset(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated,]
+    
+    def get_queryset(self):
+        return Order.objects.filter(
+            customer__user = self.request.user
+        )
 
 
 

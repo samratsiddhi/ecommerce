@@ -170,4 +170,12 @@ EMAIL_PORT = 2525
 EMAIL_HOST_USER = '74732b91075b7d' #sender's email-id
 EMAIL_HOST_PASSWORD = 'a39e8dab63234b'#password associated with above email-id
 
-
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS':{
+        'Bearer' : {
+            'type' : 'apiKey',
+            'name' : 'Authorization',
+            'in' : 'header'
+        }
+    }
+}

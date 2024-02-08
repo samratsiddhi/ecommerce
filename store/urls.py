@@ -7,6 +7,10 @@ from rest_framework.routers import SimpleRouter
 router = SimpleRouter()
 router.register('category', CategoryViewSet, basename= 'category')
 router.register('product',ProductViewSet, basename= 'product')
+router.register('customer',CustomerViewSet, basename= 'customer')
+router.register('cart',CartViewset, basename= 'cart')
+router.register('cart-item',CartItemViewset, basename= 'cart-item')
+router.register('orders',OrderViewset, basename= 'order')
 
 urlpatterns = [
     # path('category',category_list, name="category_list")

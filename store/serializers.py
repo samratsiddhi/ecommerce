@@ -1,5 +1,7 @@
 from rest_framework import serializers
+from django.db.models import Q
 from .models import *
+from django.db import transaction
 
 class CategorySerializer(serializers.ModelSerializer):
     
@@ -80,8 +82,120 @@ class ProductSerializer(serializers.ModelSerializer):
         
         
 class CustomerSerializer(serializers.ModelSerializer):
+    user =serializers.HiddenField(default=serializers.CurrentUserDefault())
+    first_name= serializers.CharField(required=True)
+    middle_name= serializers.CharField(required=True) 
+    last_name= serializers.CharField(required=True) 
+    address= serializers.CharField(required=True) 
+    gender= serializers.ChoiceField(required=True, choices = Customer.GENDER_CHOICES) 
     class Meta:
         model = Customer
-        fields = ('__all__')
+        fields = '__all__'
+        
+class CartItemSerializer(serializers.ModelSerializer):
+    product_id = serializers.PrimaryKeyRelatedField(
+        queryset = Product.objects.all(),
+        source = "product"
+    )
+    
+    product = ProductSerializer(read_only = True)
+    class Meta:
+        model = CartItem
+        fields = ['id','product_id','quantity','product']
+        
+    def create(self, validated_data):
+        request = self.context['request']
+        cart = Cart.objects.get(customer__user = request.user)
+        product = Cart.objects.filter(customer_cart = cart)
+        raise Exception(product)
+        validated_data.update({
+            'cart':cart
+        })
+        return super().create(validated_data)
+
+# class CartItemSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = CartItem
+#         fields ="__all__"
     
         
+class CartSerializer(serializers.ModelSerializer):
+    customer = serializers.StringRelatedField()
+    customer_id = serializers.PrimaryKeyRelatedField(
+        queryset = Customer.objects.all(),
+        source = 'customer',   
+        read_only= False  
+    )
+    
+    items = CartItemSerializer(many= True)
+    class Meta:
+        model = Cart
+        fields = "__all__"
+        
+        
+        
+class CartSerializer(serializers.ModelSerializer):
+    customer = serializers.StringRelatedField()
+    customer_id = serializers.PrimaryKeyRelatedField(
+        queryset = Customer.objects.all(),
+        source = 'customer',   
+        read_only= False  
+    )
+    
+    items = CartItemSerializer(many= True)
+    class Meta:
+        model = Cart
+        fields = "__all__"
+        
+        
+@transaction.atomic()
+class CancleOrderSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    shipping_address = serializers.CharField(read_only = True)
+    class Meta:
+        model = Order
+        fields = ['id','shipping_address','user']
+        
+
+@transaction.atomic()
+class OrderSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    class Meta:
+        model = Order
+        fields = ['id','shipping_address','user']
+        
+    def create(self, validated_data):
+        customer = Customer.objects.get(user = validated_data.get('user'))
+        cart = Cart.objects.get(customer = customer)
+        cart_items = CartItem.objects.filter(cart = cart)
+        order = Order.objects.create(
+            customer = customer,
+            shipping_address = validated_data.get('shipping_address'),
+            status = Order.CONFIRM_CHOICE
+        )
+        order_item_objects = [
+             OrderItem(
+                product = item.product,
+                price= item.product.price,
+                quantity= item.quantity,
+                order = order,
+             )
+        for item in cart_items     
+        ]
+        cart.delete()
+        
+        OrderItem.objects.bulk_create(order_item_objects)
+        
+        return order
+    
+    
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = '__all__'
+        
+
+        
+    
+

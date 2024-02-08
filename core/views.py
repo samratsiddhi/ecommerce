@@ -37,7 +37,7 @@ def register(request):
     send_mail(
         "welcome to ecommerce",
         "Hello" + serializer.validated_data.get('email') + "welcome",
-        "pasal@gmail.com",
+        "samrat@gmail.com",
         [serializer.validated_data.get('email'),]
     )
     

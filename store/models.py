@@ -51,9 +51,9 @@ class Customer(models.Model):
         null = True,
     )
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    
-    # def __str__(self):
-    #     return self.first_name
+        
+    def __str__(self):
+        return f"{self.first_name} ({self.user.email})"
     
     
     
@@ -66,7 +66,7 @@ class Cart(models.Model):
 class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete =  models.CASCADE)
     quantity = models.IntegerField(default = 1)
-    cart = models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE, related_name = 'items')
     
     def __str__(self):
         return str(self.id)
